@@ -1,0 +1,26 @@
+# Ignore all spatial data files
+*.tif
+*.tif.aux.xml
+*.kmz
+*.kml
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.geojson
+
+# Ignore derived data directories
+data/derived/
+data/raw/
+data/products/
+
+# R and RStudio files
+.Rhistory
+.RData
+.Rproj.user/
+
+# Logs and cache
+*.log
+.cache/
