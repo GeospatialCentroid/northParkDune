@@ -3,8 +3,11 @@ pacman::p_load(terra, dplyr, readr, furrr)
 source("functions/dataPreprocessing_functions.R")
 
 # # testing
-# r1 <- terra::rast("data/derived/cot/Creek Middle_westside_dem.tif")
-# terra::minmax(r1)
+# r1 <- terra::rast(
+#   "data/derived/rasts2025/Recreation Area North_eastside_NSH - Recreation Area North_dsm.tif"
+# )
+# need compute true for large rasters
+# terra::minmax(r1, compute = TRUE)
 
 ## process AOI
 aois <- processAOI()
@@ -16,6 +19,7 @@ aois <- processAOI()
 ## 2017 data is in utm 13, reprojection to wgs84 to match 2025
 ## this is lower resolution and there are only two objects, so decided to reproject his layer
 process2017Rasts(wgs = TRUE, overwrite = FALSE)
+process2017Rasts(wgs = FALSE, overwrite = FALSE)
 
 
 # process 2025 imagery
@@ -36,20 +40,36 @@ wgsRasts <- rasts[grep("dem", rasts)]
 plan(multisession, workers = 2)
 
 # east side processing
+# furrr::future_walk(
+#   .x = wgsRasts,
+#   .f = process2025Rast,
+#   areaName = "eastside",
+#   wgs = TRUE,
+#   overwrite = FALSE
+# )
+# east side processing
 furrr::future_walk(
-  .x = wgsRasts,
+  .x = utmRasts,
   .f = process2025Rast,
   areaName = "eastside",
-  wgs = TRUE,
+  wgs = FALSE,
   overwrite = FALSE
 )
 # will need to alter for nad83 once original 2017 data is processed
 
-# west side processing
+# # west side processing - dem
+# furrr::future_walk(
+#   .x = wgsRasts,
+#   .f = process2025Rast,
+#   areaName = "westside",
+#   wgs = TRUE,
+#   overwrite = FALSE
+# )
+# west side processing - dsm
 furrr::future_walk(
-  .x = wgsRasts,
+  .x = utmRasts,
   .f = process2025Rast,
   areaName = "westside",
-  wgs = TRUE,
+  wgs = FALSE,
   overwrite = FALSE
 )

@@ -84,6 +84,7 @@ processRast <- function(areaName, rasts, aoi_poly, wgs, output_path) {
 #
 
 process2017Rasts <- function(wgs, overwrite = FALSE) {
+  # both held in nad83 utm zone 13
   rasts <- list.files(
     path = "data/raw/2017",
     pattern = ".tif",
