@@ -50,3 +50,48 @@ generateCOGs <- function(paths) {
     }
   }
 }
+
+
+
+genericCOG <- function(importPath,exportPath){
+  cog_options <- c(
+    "COMPRESS=DEFLATE",
+    "TFW=YES", # Include world file
+    "OVERVIEW_COUNT=5" # Example: create 5 levels of overviews
+  )
+  if (!file.exists(exportPath)) {
+    tryCatch(
+      {
+        raster_data <- terra::rast(importPath)
+        # 5b. Export the raster as a COG using the "COG" driver
+        terra::writeRaster(
+          x = raster_data,
+          filename = exportPath,
+          filetype = "COG", # Specify the Cloud Optimized GeoTIFF driver
+          gdal = cog_options, # Apply the COG creation options
+          overwrite = TRUE # Allows overwriting if you rerun the script
+        )
+        
+        cat(paste0(
+          "SUCCESS: Exported as COG -> ",
+          basename(importPath),
+          "\n"
+        ))
+      },
+      error = function(e) {
+        cat(paste0(
+          "ERROR processing ",
+          basename(importPath),
+          ": ",
+          conditionMessage(e),
+          "\n"
+        ))
+      }
+    )
+  } else {
+    cat(paste0("Skipping: ", importPath, " (COG already exists)\n"))
+    next
+  }
+}
+
+
